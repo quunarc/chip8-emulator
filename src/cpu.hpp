@@ -7,13 +7,13 @@ class CHIP8
 {
 public:
     void Start();
-    void LoadToMemory();
+    void LoadToMemory(const char* file_path);
 
     void FetchDecodeExecute();
 
-private:
     // << Memory >>
     std::array<uint8_t, 4096>   _memory;
+private:
 
     // << Registers >>
     std::array<uint8_t, 16>     _registers;     // V0 - VF
