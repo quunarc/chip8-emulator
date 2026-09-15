@@ -17,10 +17,6 @@ namespace FileSystem
     void                        new_file(std::string name);
     void                        new_directory(std::string name);
 
-    // Strings
-
-
-
     // TODO: Implement this method
     void        write(std::string path, std::string content);
 }
