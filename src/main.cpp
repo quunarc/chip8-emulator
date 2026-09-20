@@ -1,19 +1,19 @@
-#include <filesystem.hpp>
-#include <array>
-#include <fstream>
 #include <iostream>
-#include <vector>
+#include <memory>
 
 #include "cpu.hpp"
 
 int main()
 {
-    CHIP8 emu;
+    // its a good practice to initialize large classes on the heap
+    // even though this is just a few thousand bytes
+    std::unique_ptr<CHIP8> C8 = std::make_unique<CHIP8>();
 
-    emu.Start();
-    emu.LoadToMemory("../roms/helloworld.rom");
+    C8->Start();
+    C8->LoadToMemory("../roms/helloworld.rom");
+    C8->FetchDecodeExecute();
 
-    std::cout << (int)emu._memory[512];
+    std::cout << (int)C8->_memory[0x200];
 
     return 0;
 }
