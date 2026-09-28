@@ -11,10 +11,12 @@ int main()
 
     C8->Start();
     C8->LoadToMemory("../roms/helloworld.rom");
-    C8->FetchDecodeExecute();
+    C8->Fetch_Decode_Execute();
 
-    std::cout << (int)C8->_memory[0x200] << std::endl;
-    std::cout << (int)C8->_registers[2];
+    std::cout << (int)C8->GetMemory(0x200) << std::endl;
+    std::cout << (int)C8->GetRegister(1) << std::endl;
+    std::cout << (int)C8->GetRegister(3) << std::endl;
+    std::cout << (int)C8->GetRegister(4) << std::endl;
 
     return 0;
 }
