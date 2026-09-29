@@ -1,4 +1,3 @@
-#include <chrono>
 #include <cstdint>
 #include <cstdlib>
 #include <fstream>
@@ -10,12 +9,14 @@
 
 void CHIP8::Start()
 {
-    // Clear Memory and Registers
+    // Clear Memory, Registers, and the Stack
     std::fill(_memory.begin(), _memory.end(), 0);
     std::fill(_registers.begin(), _registers.end(), 0);
+    std::fill(_stack.begin(), _stack.end(), 0);
 
     // Set Registers
     _r_PC = 0x200;  // program counter, at 512 bytes
+    _r_SP = 0x0;
 }
 
 void CHIP8::LoadToMemory(const char* file_path)
@@ -61,28 +62,83 @@ void CHIP8::Fetch_Decode_Execute()
         op.msb  = (op.raw & 0xF000) >> 12;
         op.x    = (op.raw & 0x0F00) >> 8;
         op.y    = (op.raw & 0x00F0) >> 4;
+        op.n    = (op.raw & 0x000F);
         op.nn   = (op.raw & 0x00FF);
         op.nnn  = (op.raw & 0x0FFF);
 
         printf("%x\n", op.raw);
         switch (op.msb)
         {
+            case 0x1: _r_PC = op.nnn; break;
+            case 0x2:
+            {
+                _stack[_r_SP] = _r_PC;
+                ++_r_SP;
+                _r_PC = op.nnn;
+                break;
+            }
+            case 0x3:
+            {
+                if (_registers[op.x] == op.nn) _r_PC += 2; break;
+            }
+            case 0x4:
+            {
+                if (_registers[op.x] != op.nn) _r_PC += 2; break;
+            }
+            case 0x5:
+            {
+                if (_registers[op.x] == _registers[op.y]) _r_PC += 2; break;
+            }
             case 0x6:
             {
                 SetRegister(op.x, op.nn);
                 break;
             }
-            case 0xa:
+            case 0x7: _registers[op.x] += op.nn; break;
+            case 0x8:
             {
-                _r_I = op.nnn;
+                switch (op.n)
+                {
+                    case 0x0: _registers[op.x] = _registers[op.y];      break;
+                    case 0x1: _registers[op.x] |= _registers[op.y];     break;
+                    case 0x2: _registers[op.x] &= _registers[op.y];     break;
+                    case 0x3: _registers[op.x] ^= _registers[op.y];     break;
+                    case 0x4: _registers[op.x] += _registers[op.y];     break;
+                    case 0x5: _registers[op.x] -= _registers[op.y];     break;
+                    case 0x6: _registers[op.x] >>= 1;                   break;
+                    case 0x7: _registers[op.x] = _registers[op.y] - _registers[op.x];  break;
+                    case 0xE: _registers[op.x] <<= 1;                   break;
+                    default: K_ASSERT_CORE(true, "No Valid Instruction");
+                }
             }
+            case 0x9:
+            {
+                if (_registers[op.x] != _registers[op.y]) _r_PC += 2; break;
+            }
+            case 0xa: _r_I = op.nnn; break;
+            case 0xb: _r_PC = _registers[0] + op.nnn; break;
+            case 0xc: /* TODO: Randomness to implement */ break;
             case 0xf:
+                switch (op.nn)
+                {
+                    case 0x1E: _r_I += _registers[op.x]; break;
+                }
                 break;
                 // continue;
             case 0x0:
+                switch (op.nn)
+                {
+                    case 0xE0: std::system("clear"); break;
+                    case 0xEE:
+                        {
+                            --_r_SP;
+                            _r_PC = _stack[_r_SP];
+                            _r_PC += 2;
+                            break;
+                        }
+                    default: K_ASSERT_CORE(true, "No Valid Instruction");
+                }
                 // K_ASSERT_CORE(!true, , "KILLED");
-                std::system("clear");
-                break;
             default:
                 printf("No valid Instruction was found\n");
         }
