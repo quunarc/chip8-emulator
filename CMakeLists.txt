@@ -18,7 +18,11 @@ set(source_dir src)
 
 file(GLOB_RECURSE sources ${source_dir}/*.cpp ${source_dir}/*.c ${source_dir}/*.h)
 
+find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3-shared)
+
 add_executable(main ${sources})
+
+target_link_libraries(main PRIVATE SDL3::SDL3)
 
 target_include_directories(main PRIVATE ${CMAKE_SOURCE_DIR}/src)
 target_include_directories(main PRIVATE ${CMAKE_SOURCE_DIR}/src/utils)

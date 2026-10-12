@@ -9,6 +9,7 @@ public:
     // << CORE >>
     void Start();
     void LoadToMemory(const char* file_path);
+    void Cycle();
     void Fetch_Decode_Execute();
 
     // << UTILS >>
@@ -18,6 +19,9 @@ public:
 
     void SetRegister(uint8_t index, uint16_t value);
     void SetMemory(uint16_t index, uint8_t value);
+
+private:
+    void InitSDL();
 
 private:
     // << Memory >>
@@ -35,6 +39,8 @@ private:
     uint16_t    _r_CIR; // Current Instruction Register
     uint16_t    _r_SP;  // Stack Pointer
 
+    // misc
+    bool m_running;
 };
 
 struct Opcode

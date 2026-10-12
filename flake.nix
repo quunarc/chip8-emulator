@@ -22,6 +22,9 @@ in
 {
     devShells.x86_64-linux.default = pkgs.mkShell {
     buildInputs = with pkgs; [
+        #libs
+        sdl3
+
         # build system
         gcc
         cmake

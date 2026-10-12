@@ -15,16 +15,17 @@ inline void custom_assert_fail_soft(const char* expr, const char* file, int line
 
 #define K_ASSERT_CORE(condition, format_str, ...)                                                   \
     do {                                                                                            \
-        if (!condition) {                                                                           \
+        if (!(condition)) {                                                                         \
             char assert_buf[512];                                                                   \
             std::snprintf(assert_buf, sizeof(assert_buf), format_str, ##__VA_ARGS__);               \
             custom_assert_fail(#condition, __FILE__, __LINE__, std::string(assert_buf));            \
+                                                                                                    \
         }                                                                                           \
     } while (0)
 
 #define K_ASSERT_CORE_SOFT(condition, action, format_str, ...)                                      \
     do {                                                                                            \
-        if (!condition) {                                                                           \
+        if (!(condition)) {                                                                         \
             char assert_buf[512];                                                                   \
             std::snprintf(assert_buf, sizeof(assert_buf), format_str, ##__VA_ARGS__);               \
             custom_assert_fail_soft(#condition, __FILE__, __LINE__, std::string(assert_buf));       \
