@@ -122,7 +122,8 @@ void CHIP8::Cycle()
         }
         case 0xa: _r_I = op.nnn; break;
         case 0xb: _r_PC = _registers[0] + op.nnn; break;
-        case 0xc: /* TODO: Randomness to implement */ break;
+        case 0xc: _registers[op.x] = rand() & op.nn; break;
+        // case 0xd: Display();
         case 0xf:
             switch (op.nn)
             {
@@ -177,6 +178,11 @@ void CHIP8::SetRegister(uint8_t index, uint16_t value) {
 void CHIP8::SetMemory(uint16_t index, uint8_t value) {
     K_ASSERT_CORE(index < _memory.size(), "Array out of bounds");
     _memory[index] = value;
+}
+
+void CHIP8::Display(uint8_t x, uint8_t y, uint8_t N)
+{
+    // TODO: write
 }
 
 uint16_t CHIP8::Hex2Dec(uint16_t hex)

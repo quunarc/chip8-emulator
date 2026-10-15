@@ -19,6 +19,7 @@ public:
 
     void SetRegister(uint8_t index, uint16_t value);
     void SetMemory(uint16_t index, uint8_t value);
+    void Display(uint8_t x, uint8_t y, uint8_t N);
 
 private:
     void InitSDL();
