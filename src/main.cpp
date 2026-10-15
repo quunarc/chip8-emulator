@@ -23,7 +23,7 @@ int main()
         Graphics::Render();
     }
 
-    std::cout << (int)C8->GetMemory(0x200) << std::endl;
+    std::cout << (int)C8->GetMemory(0x54) << std::endl;
     std::cout << (int)C8->GetRegister(1) << std::endl;
     std::cout << (int)C8->GetRegister(3) << std::endl;
     std::cout << (int)C8->GetRegister(4) << std::endl;

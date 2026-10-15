@@ -7,6 +7,9 @@
 #include "cpu.hpp"
 #include "assert.hpp"
 
+#define PC_START_POINT 0x200
+#define SP_START_POINT 0x0
+
 void CHIP8::Start()
 {
     // Clear Memory, Registers, and the Stack
@@ -14,9 +17,11 @@ void CHIP8::Start()
     std::fill(_registers.begin(), _registers.end(), 0);
     std::fill(_stack.begin(), _stack.end(), 0);
 
+    for (int i{0}; i<80; i++) _memory[0x50 + i] = font_data[i];
+
     // Set Registers
-    _r_PC = 0x200;  // program counter, at 512 bytes
-    _r_SP = 0x0;
+    _r_PC = PC_START_POINT;  // program counter, at 512 bytes
+    _r_SP = SP_START_POINT;
 
     m_running = true;
 }
@@ -123,7 +128,7 @@ void CHIP8::Cycle()
         case 0xa: _r_I = op.nnn; break;
         case 0xb: _r_PC = _registers[0] + op.nnn; break;
         case 0xc: _registers[op.x] = rand() & op.nn; break;
-        // case 0xd: Display();
+        // case 0xd: Display(uint8_t x, uint8_t y, uint8_t N);
         case 0xf:
             switch (op.nn)
             {
